@@ -11,7 +11,7 @@ public class bankingdao {
 
 	}
 	
-	public int registercustomer(customer c1) throws Exception {
+	public  int registercustomer(customer c1) throws Exception {
 		
 		 String query="insert into customer values(?,?,?,?)";
 		 PreparedStatement pst=con.prepareStatement(query);
@@ -23,7 +23,57 @@ public class bankingdao {
 		 
 		 int res=pst.executeUpdate();
 		 return res;
-		
 	}
+	 public int login(String uname,int pwd) throws Exception {
+		 
+		 String query="select * from customer where cusname= '"+uname+"'";
+		 Statement st=con.createStatement();
+		 ResultSet rs=st.executeQuery(query);
+		 
+		 if(rs.next()) {
+			  int password=rs.getInt(3);
+			  if(password==pwd) {
+				   return  rs.getInt(1);
+			  }
+			  else {
+				   return 0;
+			  }
+		 }
+		 else {
+			 return -1;
+			 
+			  }
+	 }
+	 
+	 public int  deposit(int amount,int customerid)throws Exception {
+		 
+		 String query2="select * from customer where cusid="+customerid;
+		 
+		 Statement st=con.createStatement();
+		 
+		 ResultSet rs=st.executeQuery(query2);
+		 rs.next();
+		 
+		 int bal=rs.getInt(4);
+		 
+		 amount+=bal;
+		 
+		 String query="update customer set cusamount ="+amount+" where cusid="+customerid;
+		 
+		 PreparedStatement pst=con.prepareStatement(query);
+		 
+		 pst.executeUpdate();
+		 
+		    return amount;
+		    
+		 
+		 
+		 
+		 
+		 
+	 }
+	 }
+	
+	
 
-}
+
